@@ -11,19 +11,20 @@ def read_data(csv_file, db):
 
     with open(csv_file, encoding='utf8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
+        reader_tuple = tuple(iter(reader))
         for row in reader:
             row['Цена'] = int(row['Цена'])
-        tickets_collection.insert_many(reader)
+        tickets_collection.insert_many(reader_tuple)
 
 
 def find_cheapest(db):
-    result = db['tickets'].tickets_collection.find().sort('Цена', pymongo.ASCENDING)
+    result = db['tickets'].find().sort('Цена', pymongo.ASCENDING)
 
     return result
 
 
 def find_by_name(name, db):
-    all_by_name = db.tickets_collection.find({'Исполнитель': name})
+    all_by_name = db['tickets'].find({'Исполнитель': name})
 
     sorted_result = all_by_name.sort('Цена', pymongo.ASCENDING)
 
